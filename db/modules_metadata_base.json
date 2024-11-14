@@ -23688,7 +23688,7 @@
       "alanfoster",
       "sjanusz-r7"
     ],
-    "description": "This module will enumerate valid Domain Users via Kerberos from an unauthenticated perspective. It utilizes\n          the different responses returned by the service for valid and invalid users.",
+    "description": "This module will enumerate valid Domain Users via Kerberos from an unauthenticated perspective. It utilizes\n          the different responses returned by the service for valid and invalid users. This module can also detect accounts\n          that are vulnerable to ASREPRoast attacks.",
     "references": [
       "URL-https://nmap.org/nsedoc/scripts/krb5-enum-users.html"
     ],
@@ -23702,7 +23702,7 @@
 
     ],
     "targets": null,
-    "mod_time": "2022-05-27 13:34:10 +0000",
+    "mod_time": "2024-11-12 13:34:51 +0000",
     "path": "/modules/auxiliary/gather/kerberos_enumusers.rb",
     "is_install_path": true,
     "ref_name": "gather/kerberos_enumusers",
@@ -61517,6 +61517,61 @@
 
     ]
   },
+  "auxiliary_server/relay/esc8": {
+    "name": "ESC8 Relay: SMB to HTTP(S)",
+    "fullname": "auxiliary/server/relay/esc8",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": null,
+    "type": "auxiliary",
+    "author": [
+      "bwatters-r7",
+      "jhicks-r7",
+      "Spencer McIntyre"
+    ],
+    "description": "This module creates an SMB server and then relays the credentials passed to it\n        to an HTTP server to gain an authenticated connection.  Once that connection is\n        established, the module makes an authenticated request for a certificate based\n        on a given template.",
+    "references": [
+
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": null,
+    "mod_time": "2024-11-04 13:37:23 +0000",
+    "path": "/modules/auxiliary/server/relay/esc8.rb",
+    "is_install_path": true,
+    "ref_name": "server/relay/esc8",
+    "check": false,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+    },
+    "session_types": false,
+    "needs_cleanup": false,
+    "actions": [
+      {
+        "name": "Relay",
+        "description": "Run SMB ESC8 relay server"
+      }
+    ]
+  },
   "auxiliary_server/socks_proxy": {
     "name": "SOCKS Proxy Server",
     "fullname": "auxiliary/server/socks_proxy",
@@ -79517,6 +79572,75 @@
       "SideEffects": [
         "artifacts-on-disk",
         "ioc-in-logs"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": true
+  },
+  "exploit_linux/http/paloalto_expedition_rce": {
+    "name": "Palo Alto Expedition Remote Code Execution (CVE-2024-5910 and CVE-2024-9464)",
+    "fullname": "exploit/linux/http/paloalto_expedition_rce",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-10-09",
+    "type": "exploit",
+    "author": [
+      "Michael Heinzl",
+      "Zach Hanley",
+      "Enrique Castillo",
+      "Brian Hysell"
+    ],
+    "description": "Obtain remote code execution in Palo Alto Expedition version 1.2.91 and below.\n          The first vulnerability, CVE-2024-5910, allows to reset the password of the admin user, and the second vulnerability, CVE-2024-9464, is an authenticated OS command injection. In a default installation, commands will get executed in the context of www-data.\n          When credentials are provided, this module will only exploit the second vulnerability. If no credentials are provided, the module will first try to reset the admin password and then perform the OS command injection.",
+    "references": [
+      "URL-https://www.horizon3.ai/attack-research/palo-alto-expedition-from-n-day-to-full-compromise/",
+      "URL-https://security.paloaltonetworks.com/PAN-SA-2024-0010",
+      "URL-https://security.paloaltonetworks.com/CVE-2024-5910",
+      "URL-https://attackerkb.com/topics/JwTzQJuBmn/cve-2024-5910",
+      "URL-https://attackerkb.com/topics/ky1MIrne9r/cve-2024-9464",
+      "CVE-2024-5910",
+      "CVE-2024-24809"
+    ],
+    "platform": "Linux,Unix",
+    "arch": "cmd",
+    "rport": 443,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "Linux Command"
+    ],
+    "mod_time": "2024-11-12 15:15:15 +0000",
+    "path": "/modules/exploits/linux/http/paloalto_expedition_rce.rb",
+    "is_install_path": true,
+    "ref_name": "linux/http/paloalto_expedition_rce",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+        "ioc-in-logs",
+        "artifacts-on-disk",
+        "account-lockouts"
       ]
     },
     "session_types": false,
@@ -127921,67 +128045,6 @@
         "ioc-in-logs",
         "config-changes",
         "artifacts-on-disk"
-      ]
-    },
-    "session_types": false,
-    "needs_cleanup": null
-  },
-  "exploit_unix/webapp/byob_unauth_rce": {
-    "name": "BYOB Unauthenticated RCE via Arbitrary File Write and Command Injection (CVE-2024-45256, CVE-2024-45257)",
-    "fullname": "exploit/unix/webapp/byob_unauth_rce",
-    "aliases": [
-
-    ],
-    "rank": 600,
-    "disclosure_date": "2024-08-15",
-    "type": "exploit",
-    "author": [
-      "chebuya",
-      "Valentin Lobstein"
-    ],
-    "description": "This module exploits two vulnerabilities in the BYOB (Build Your Own Botnet) web GUI:\n          1. CVE-2024-45256: Unauthenticated arbitrary file write that allows modification of the SQLite database, adding a new admin user.\n          2. CVE-2024-45257: Authenticated command injection in the payload generation page.\n\n          These vulnerabilities remain unpatched.",
-    "references": [
-      "CVE-2024-45256",
-      "CVE-2024-45257",
-      "URL-https://blog.chebuya.com/posts/unauthenticated-remote-command-execution-on-byob/"
-    ],
-    "platform": "Linux,Unix",
-    "arch": "ARCH_CMD",
-    "rport": 80,
-    "autofilter_ports": [
-      80,
-      8080,
-      443,
-      8000,
-      8888,
-      8880,
-      8008,
-      3000,
-      8443
-    ],
-    "autofilter_services": [
-      "http",
-      "https"
-    ],
-    "targets": [
-      "Unix/Linux Command Shell"
-    ],
-    "mod_time": "2024-10-14 11:46:53 +0000",
-    "path": "/modules/exploits/unix/webapp/byob_unauth_rce.rb",
-    "is_install_path": true,
-    "ref_name": "unix/webapp/byob_unauth_rce",
-    "check": true,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "SideEffects": [
-        "ioc-in-logs"
-      ],
-      "Reliability": [
-        "repeatable-session"
       ]
     },
     "session_types": false,
@@ -191898,7 +191961,7 @@
       "MOF upload",
       "Command"
     ],
-    "mod_time": "2024-03-25 10:53:08 +0000",
+    "mod_time": "2024-10-23 11:17:22 +0000",
     "path": "/modules/exploits/windows/smb/smb_relay.rb",
     "is_install_path": true,
     "ref_name": "windows/smb/smb_relay",
@@ -254691,48 +254754,6 @@
 
     ]
   },
-  "post_android/gather/hashdump": {
-    "name": "Android Gather Dump Password Hashes for Android Systems",
-    "fullname": "post/android/gather/hashdump",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "h00die",
-      "timwr"
-    ],
-    "description": "Post Module to dump the password hashes for Android System. Root is required.\n            To perform this operation, two things are needed.  First, a password.key file\n            is required as this contains the hash but no salt.  Next, a sqlite3 database\n            is needed (with supporting files) to pull the salt from.  Combined, this\n            creates the hash we need.  Samsung based devices change the hash slightly.",
-    "references": [
-      "URL-https://www.pentestpartners.com/security-blog/cracking-android-passwords-a-how-to/",
-      "URL-https://hashcat.net/forum/thread-2202.html"
-    ],
-    "platform": "Android",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2023-02-08 13:47:34 +0000",
-    "path": "/modules/post/android/gather/hashdump.rb",
-    "is_install_path": true,
-    "ref_name": "android/gather/hashdump",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-    },
-    "session_types": [
-      "meterpreter",
-      "shell"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_android/gather/sub_info": {
     "name": "extracts subscriber info from target device",
     "fullname": "post/android/gather/sub_info",
@@ -259126,48 +259147,6 @@
 
     ]
   },
-  "post_multi/gather/lastpass_creds": {
-    "name": "LastPass Vault Decryptor",
-    "fullname": "post/multi/gather/lastpass_creds",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Alberto Garcia Illera <agarciaillera@gmail.com>",
-      "Martin Vigo <martinvigo@gmail.com>",
-      "Jon Hart <jon_hart@rapid7.com>"
-    ],
-    "description": "This module extracts and decrypts LastPass master login accounts and passwords,\n          encryption keys, 2FA tokens and all the vault passwords",
-    "references": [
-      "URL-http://www.martinvigo.com/even-the-lastpass-will-be-stolen-deal-with-it"
-    ],
-    "platform": "Linux,OSX,Unix,Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-06-06 14:53:28 +0000",
-    "path": "/modules/post/multi/gather/lastpass_creds.rb",
-    "is_install_path": true,
-    "ref_name": "multi/gather/lastpass_creds",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-    },
-    "session_types": [
-      "meterpreter",
-      "shell"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_multi/gather/maven_creds": {
     "name": "Multi Gather Maven Credentials Collection",
     "fullname": "post/multi/gather/maven_creds",
@@ -263097,45 +263076,6 @@
 
     ]
   },
-  "post_windows/gather/ad_to_sqlite": {
-    "name": "AD Computer, Group and Recursive User Membership to Local SQLite DB",
-    "fullname": "post/windows/gather/ad_to_sqlite",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Stuart Morgan <stuart.morgan@mwrinfosecurity.com>"
-    ],
-    "description": "This module will gather a list of AD groups, identify the users (taking into account recursion)\n          and write this to a SQLite database for offline analysis and query using normal SQL syntax.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2023-02-08 13:47:34 +0000",
-    "path": "/modules/post/windows/gather/ad_to_sqlite.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/ad_to_sqlite",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/arp_scanner": {
     "name": "Windows Gather ARP Scanner",
     "fullname": "post/windows/gather/arp_scanner",
@@ -263449,109 +263389,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/adi_irc": {
-    "name": "Adi IRC credential gatherer",
-    "fullname": "post/windows/gather/credentials/adi_irc",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Jacob Tierney",
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials stored on AdiIRC Client in a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-05-15 15:05:42 +0000",
-    "path": "/modules/post/windows/gather/credentials/adi_irc.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/adi_irc",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/aim": {
-    "name": "Aim credential gatherer",
-    "fullname": "post/windows/gather/credentials/aim",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Aim credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/aim.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/aim",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/avira_password": {
     "name": "Windows Gather Avira Password Extraction",
     "fullname": "post/windows/gather/credentials/avira_password",
@@ -263630,211 +263467,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/carotdav_ftp": {
-    "name": "CarotDAV credential gatherer",
-    "fullname": "post/windows/gather/credentials/carotdav_ftp",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Jacob Tierney",
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials stored on CarotDAV FTP Client in a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-05-15 14:52:58 +0000",
-    "path": "/modules/post/windows/gather/credentials/carotdav_ftp.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/carotdav_ftp",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/chrome": {
-    "name": "Chrome credential gatherer",
-    "fullname": "post/windows/gather/credentials/chrome",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials stored on Chrome in a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-10-30 15:43:02 +0000",
-    "path": "/modules/post/windows/gather/credentials/chrome.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/chrome",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/comodo": {
-    "name": "Comodo credential gatherer",
-    "fullname": "post/windows/gather/credentials/comodo",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials stored in Comodo on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/comodo.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/comodo",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/coolnovo": {
-    "name": "Coolnovo credential gatherer",
-    "fullname": "post/windows/gather/credentials/coolnovo",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Coolnovo credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/coolnovo.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/coolnovo",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/coreftp": {
     "name": "Windows Gather CoreFTP Saved Password Extraction",
     "fullname": "post/windows/gather/credentials/coreftp",
@@ -263904,57 +263536,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/digsby": {
-    "name": "Digsby credential gatherer",
-    "fullname": "post/windows/gather/credentials/digsby",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Digsby credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/digsby.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/digsby",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -264322,57 +263903,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/flock": {
-    "name": "Flock credential gatherer",
-    "fullname": "post/windows/gather/credentials/flock",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials stored in Flock on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/flock.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/flock",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/ftpnavigator": {
     "name": "Windows Gather FTP Navigator Saved Password Extraction",
     "fullname": "post/windows/gather/credentials/ftpnavigator",
@@ -264451,57 +263981,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/gadugadu": {
-    "name": "Gadugadu credential gatherer",
-    "fullname": "post/windows/gather/credentials/gadugadu",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Gadugadu credentials on a windows remote host. Gadu-Gadu is a Polish instant messaging client using a proprietary protocol. Gadu-Gadu was the most popular IM service in Poland.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/gadugadu.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/gadugadu",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/gpp": {
     "name": "Windows Gather Group Policy Preference Saved Passwords",
     "fullname": "post/windows/gather/credentials/gpp",
@@ -264540,58 +264019,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/halloy_irc": {
-    "name": "Halloy IRC credential gatherer",
-    "fullname": "post/windows/gather/credentials/halloy_irc",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Jacob Tierney",
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials stored on Halloy IRC Client in a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-05-15 14:07:48 +0000",
-    "path": "/modules/post/windows/gather/credentials/halloy_irc.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/halloy_irc",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -264640,57 +264067,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/icq": {
-    "name": "ICQ credential gatherer",
-    "fullname": "post/windows/gather/credentials/icq",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for ICQ credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/icq.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/icq",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/idm": {
     "name": "Windows Gather Internet Download Manager (IDM) Password Extractor",
     "fullname": "post/windows/gather/credentials/idm",
@@ -264722,57 +264098,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/ie": {
-    "name": "Ie credential gatherer",
-    "fullname": "post/windows/gather/credentials/ie",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for ie credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/ie.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/ie",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -264851,261 +264176,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/incredimail": {
-    "name": "Incredimail credential gatherer",
-    "fullname": "post/windows/gather/credentials/incredimail",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Incredimail credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/incredimail.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/incredimail",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/kakaotalk": {
-    "name": "KakaoTalk credential gatherer",
-    "fullname": "post/windows/gather/credentials/kakaotalk",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for KakaoTalk credentials on a windows remote host. KakaoTalk is a popular mobile messaging app most widely used in South Korea.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/kakaotalk.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/kakaotalk",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/kmeleon": {
-    "name": "Kmeleon credential gatherer",
-    "fullname": "post/windows/gather/credentials/kmeleon",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for K-meleon credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/kmeleon.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/kmeleon",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/line": {
-    "name": "LINE credential gatherer",
-    "fullname": "post/windows/gather/credentials/line",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials in LINE desktop application on a windows remote host. LINE is the most popular Instant Messenger app in Japan.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/line.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/line",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/maxthon": {
-    "name": "Maxthon credential gatherer",
-    "fullname": "post/windows/gather/credentials/maxthon",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Maxthon credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/maxthon.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/maxthon",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -265225,57 +264295,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/miranda": {
-    "name": "Miranda credential gatherer",
-    "fullname": "post/windows/gather/credentials/miranda",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Miranda credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/miranda.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/miranda",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -265505,108 +264524,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/opera": {
-    "name": "Opera credential gatherer",
-    "fullname": "post/windows/gather/credentials/opera",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Opera credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/opera.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/opera",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/operamail": {
-    "name": "Operamail credential gatherer",
-    "fullname": "post/windows/gather/credentials/operamail",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Operamail credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/operamail.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/operamail",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/outlook": {
     "name": "Windows Gather Microsoft Outlook Saved Password Extraction",
     "fullname": "post/windows/gather/credentials/outlook",
@@ -265684,57 +264601,6 @@
         "ioc-in-logs"
       ],
       "Reliability": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/postbox": {
-    "name": "Postbox credential gatherer",
-    "fullname": "post/windows/gather/credentials/postbox",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Postbox credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/postbox.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/postbox",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
 
       ]
     },
@@ -265828,109 +264694,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/qq": {
-    "name": "QQ credential gatherer",
-    "fullname": "post/windows/gather/credentials/qq",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for QQ credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/qq.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/qq",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/quassel_irc": {
-    "name": "Quassel IRC credential gatherer",
-    "fullname": "post/windows/gather/credentials/quassel_irc",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Jacob Tierney",
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials stored on Quassel IRC Client in a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-05-15 15:09:51 +0000",
-    "path": "/modules/post/windows/gather/credentials/quassel_irc.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/quassel_irc",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -266052,156 +264815,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/redis_desktop_manager": {
-    "name": "RedisDesktopManager credential gatherer",
-    "fullname": "post/windows/gather/credentials/redis_desktop_manager",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kali-Team"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for RedisDesktopManager credentials on a windows remote host.",
-    "references": [
-      "URL-https://blog.kali-team.cn/Metasploit-PackRat-RedisDesktopManager-42dc7ab063f040d182da0f1fc16db74e"
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2022-09-14 17:03:42 +0000",
-    "path": "/modules/post/windows/gather/credentials/redis_desktop_manager.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/redis_desktop_manager",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/safari": {
-    "name": "Safari credential gatherer",
-    "fullname": "post/windows/gather/credentials/safari",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for safari credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/safari.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/safari",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/seamonkey": {
-    "name": "Seamonkey credential gatherer",
-    "fullname": "post/windows/gather/credentials/seamonkey",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for seamonkey credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-10-30 15:43:02 +0000",
-    "path": "/modules/post/windows/gather/credentials/seamonkey.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/seamonkey",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -266484,57 +265097,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/srware": {
-    "name": "Srware credential gatherer",
-    "fullname": "post/windows/gather/credentials/srware",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Srware credentials on a windows remote host. SRWare Iron is a Chromium-based web browser developed by the German company SRWare.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/srware.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/srware",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/sso": {
     "name": "Windows Single Sign On Credential Collector (Mimikatz)",
     "fullname": "post/windows/gather/credentials/sso",
@@ -266613,109 +265175,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/sylpheed": {
-    "name": "Sylpheed email credential gatherer",
-    "fullname": "post/windows/gather/credentials/sylpheed",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Jacob Tierney",
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials stored on Sylpheed email client in a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-05-15 14:58:51 +0000",
-    "path": "/modules/post/windows/gather/credentials/sylpheed.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/sylpheed",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/tango": {
-    "name": "Tango credential gatherer",
-    "fullname": "post/windows/gather/credentials/tango",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Tango credentials on a windows remote host. Tango is a third-party, cross platform messaging application software for smartphones developed by TangoME, Inc.t",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/tango.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/tango",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/teamviewer_passwords": {
     "name": "Windows Gather TeamViewer Passwords",
     "fullname": "post/windows/gather/credentials/teamviewer_passwords",
@@ -266749,57 +265208,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/thunderbird": {
-    "name": "Thunderbird credential gatherer",
-    "fullname": "post/windows/gather/credentials/thunderbird",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for thunderbird credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2022-04-27 21:58:02 +0000",
-    "path": "/modules/post/windows/gather/credentials/thunderbird.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/thunderbird",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -266862,57 +265270,6 @@
         "name": "Export",
         "description": "Export Secret Server database without decryption"
       }
-    ]
-  },
-  "post_windows/gather/credentials/tlen": {
-    "name": "Tlen credential gatherer",
-    "fullname": "post/windows/gather/credentials/tlen",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Tlen credentials on a windows remote host. Tlen is a free Polish instant messaging service.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/tlen.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/tlen",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
     ]
   },
   "post_windows/gather/credentials/tortoisesvn": {
@@ -267090,57 +265447,6 @@
         "name": "Export",
         "description": "Export Veeam databases without decryption"
       }
-    ]
-  },
-  "post_windows/gather/credentials/viber": {
-    "name": "Viber credential gatherer",
-    "fullname": "post/windows/gather/credentials/viber",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for credentials in Viber desktop application on a windows remote host. Viber is a cross-platform voice over IP and instant messaging software application.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/viber.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/viber",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
     ]
   },
   "post_windows/gather/credentials/vnc": {
@@ -267398,57 +265704,6 @@
 
     ]
   },
-  "post_windows/gather/credentials/windowslivemail": {
-    "name": "Windows Live Mail credential gatherer",
-    "fullname": "post/windows/gather/credentials/windowslivemail",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Windows Live Mail credentials on a windows remote host.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/windowslivemail.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/windowslivemail",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
   "post_windows/gather/credentials/winscp": {
     "name": "Windows Gather WinSCP Saved Password Extraction",
     "fullname": "post/windows/gather/credentials/winscp",
@@ -267518,57 +265773,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/credentials/xchat": {
-    "name": "Xchat credential gatherer",
-    "fullname": "post/windows/gather/credentials/xchat",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Kazuyoshi Maruta",
-      "Daniel Hallsworth",
-      "Barwar Salim M",
-      "Z. Cliffe Schreuders"
-    ],
-    "description": "PackRat is a post-exploitation module that gathers file and information artifacts from end users' systems.\n          PackRat searches for and downloads files of interest (such as config files, and received and deleted emails) and extracts information (such as contacts and usernames and passwords), using regexp, JSON, XML, and SQLite queries.\n          Further details can be found in the module documentation.\n          This is a module that searches for Xchat credentials on a windows remote host. XChat is an IRC chat program for both Linux and Windows.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2021-09-27 12:34:07 +0000",
-    "path": "/modules/post/windows/gather/credentials/xchat.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/credentials/xchat",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-
-      ]
     },
     "session_types": [
       "meterpreter"
@@ -268188,55 +266392,6 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
-    },
-    "session_types": [
-      "meterpreter"
-    ],
-    "needs_cleanup": null,
-    "actions": [
-
-    ]
-  },
-  "post_windows/gather/enum_browsers": {
-    "name": "Advanced Browser Data Extraction for Chromium and Gecko Browsers",
-    "fullname": "post/windows/gather/enum_browsers",
-    "aliases": [
-
-    ],
-    "rank": 300,
-    "disclosure_date": null,
-    "type": "post",
-    "author": [
-      "Alexander \"xaitax\" Hagenah"
-    ],
-    "description": "This post-exploitation module extracts sensitive browser data from both Chromium-based and Gecko-based browsers\n          on the target system. It supports the decryption of passwords and cookies using Windows Data Protection API (DPAPI)\n          and can extract additional data such as browsing history, keyword search history, download history, autofill data,\n          credit card information, browser cache and installed extensions.",
-    "references": [
-
-    ],
-    "platform": "Windows",
-    "arch": "x64, x86",
-    "rport": null,
-    "autofilter_ports": null,
-    "autofilter_services": null,
-    "targets": null,
-    "mod_time": "2024-10-30 15:43:02 +0000",
-    "path": "/modules/post/windows/gather/enum_browsers.rb",
-    "is_install_path": true,
-    "ref_name": "windows/gather/enum_browsers",
-    "check": false,
-    "post_auth": false,
-    "default_credential": false,
-    "notes": {
-      "Stability": [
-        "crash-safe"
-      ],
-      "Reliability": [
-
-      ],
-      "SideEffects": [
-        "ioc-in-logs",
-        "artifacts-on-disk"
-      ]
     },
     "session_types": [
       "meterpreter"
