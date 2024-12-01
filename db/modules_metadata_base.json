@@ -6188,6 +6188,67 @@
 
     ]
   },
+  "auxiliary_admin/http/wp_post_smtp_acct_takeover": {
+    "name": "Wordpress POST SMTP Account Takeover",
+    "fullname": "auxiliary/admin/http/wp_post_smtp_acct_takeover",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": "2024-01-10",
+    "type": "auxiliary",
+    "author": [
+      "h00die",
+      "Ulysses Saicha"
+    ],
+    "description": "The POST SMTP WordPress plugin prior to 2.8.7 is affected by a privilege\n          escalation where an unauthenticated user is able to reset the password\n          of an arbitrary user. This is done by requesting a password reset, then\n          viewing the latest email logs to find the associated password reset email.",
+    "references": [
+      "CVE-2023-6875",
+      "URL-https://github.com/UlyssesSaicha/CVE-2023-6875/tree/main"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": null,
+    "mod_time": "2024-11-28 13:18:47 +0000",
+    "path": "/modules/auxiliary/admin/http/wp_post_smtp_acct_takeover.rb",
+    "is_install_path": true,
+    "ref_name": "admin/http/wp_post_smtp_acct_takeover",
+    "check": true,
+    "post_auth": true,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "ioc-in-logs"
+      ],
+      "Reliability": [
+
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": false,
+    "actions": [
+
+    ]
+  },
   "auxiliary_admin/http/wp_symposium_sql_injection": {
     "name": "WordPress Symposium Plugin SQL Injection",
     "fullname": "auxiliary/admin/http/wp_symposium_sql_injection",
@@ -6445,7 +6506,7 @@
 
     ],
     "targets": null,
-    "mod_time": "2024-04-02 15:29:47 +0000",
+    "mod_time": "2024-11-18 15:32:08 +0000",
     "path": "/modules/auxiliary/admin/kerberos/get_ticket.rb",
     "is_install_path": true,
     "ref_name": "admin/kerberos/get_ticket",
@@ -19473,6 +19534,70 @@
 
     ]
   },
+  "auxiliary_gather/acronis_cyber_protect_machine_info_disclosure": {
+    "name": "Acronis Cyber Protect/Backup machine info disclosure",
+    "fullname": "auxiliary/gather/acronis_cyber_protect_machine_info_disclosure",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": null,
+    "type": "auxiliary",
+    "author": [
+      "h00die-gr3y <h00die.gr3y@gmail.com>",
+      "Sandro Tolksdorf of usd AG."
+    ],
+    "description": "Acronis Cyber Protect or Backup is an enterprise backup/recovery solution for all,\n          compute, storage and application resources. Businesses and Service Providers are using it\n          to protect and backup all IT assets in their IT environment.\n          This module exploits an authentication bypass vulnerability at the Acronis Cyber Protect\n          appliance which, in its default configuration, allows the anonymous registration of new\n          backup/protection agents on new endpoints. This API endpoint also generates bearer tokens\n          which the agent then uses to authenticate to the appliance.\n          As the management web console is running on the same port as the API for the agents, this\n          bearer token is also valid for any actions on the web console. This allows an attacker\n          with network access to the appliance to start the registration of a new agent, retrieve\n          a bearer token that provides admin access to the available functions in the web console.\n\n          This module will gather all machine info (endpoints) configured and managed by the appliance.\n          This information can be used in a subsequent attack that exploits this vulnerability to\n          execute arbitrary commands on both the managed endpoint and the appliance.\n          This exploit is covered in another module `exploit/multi/acronis_cyber_protect_unauth_rce_cve_2022_3405`.\n\n          Acronis Cyber Protect 15 (Windows, Linux) before build 29486 and\n          Acronis Cyber Backup 12.5 (Windows, Linux) before build 16545 are vulnerable.",
+    "references": [
+      "CVE-2022-30995",
+      "CVE-2022-3405",
+      "URL-https://herolab.usd.de/security-advisories/usd-2022-0008/",
+      "URL-https://attackerkb.com/topics/27RudJXbN4/cve-2022-30995"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 9877,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": null,
+    "mod_time": "2024-11-26 16:10:14 +0000",
+    "path": "/modules/auxiliary/gather/acronis_cyber_protect_machine_info_disclosure.rb",
+    "is_install_path": true,
+    "ref_name": "gather/acronis_cyber_protect_machine_info_disclosure",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk",
+        "ioc-in-logs"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": false,
+    "actions": [
+
+    ]
+  },
   "auxiliary_gather/adobe_coldfusion_fileread_cve_2023_26360": {
     "name": "Adobe ColdFusion Unauthenticated Arbitrary File Read",
     "fullname": "auxiliary/gather/adobe_coldfusion_fileread_cve_2023_26360",
@@ -24077,6 +24202,10 @@
         "description": "Dump info about all known organizational units in the LDAP environment."
       },
       {
+        "name": "ENUM_PRE_WINDOWS_2000_COMPUTERS",
+        "description": "Dump info about all computer objects likely created as a \"pre-Windows 2000 computer\", for which the password might be predictable."
+      },
+      {
         "name": "ENUM_UNCONSTRAINED_DELEGATION",
         "description": "Dump info about all known objects that allow unconstrained delegation."
       },
@@ -27363,7 +27492,8 @@
     "author": [
       "Alberto Solino",
       "Christophe De La Fuente",
-      "antuache"
+      "antuache",
+      "smashery"
     ],
     "description": "Dumps SAM hashes and LSA secrets (including cached creds) from the\n          remote Windows target without executing any agent locally. This is\n          done by remotely updating the registry key security descriptor,\n          taking advantage of the WriteDACL privileges held by local\n          administrators to set temporary read permissions.\n\n          This can be disabled by setting the `INLINE` option to false and the\n          module will fallback to the original implementation, which consists\n          in saving the registry hives locally on the target\n          (%SYSTEMROOT%\\Temp\\<random>.tmp), downloading the temporary hive\n          files and reading the data from it. This temporary files are removed\n          when it's done.\n\n          On domain controllers, secrets from Active Directory is extracted\n          using [MS-DRDS] DRSGetNCChanges(), replicating the attributes we need\n          to get SIDs, NTLM hashes, groups, password history, Kerberos keys and\n          other interesting data. Note that the actual `NTDS.dit` file is not\n          downloaded. Instead, the Directory Replication Service directly asks\n          Active Directory through RPC requests.\n\n          This modules takes care of starting or enabling the Remote Registry\n          service if needed. It will restore the service to its original state\n          when it's done.\n\n          This is a port of the great Impacket `secretsdump.py` code written by\n          Alberto Solino.",
     "references": [
@@ -27381,7 +27511,7 @@
       "microsoft-ds"
     ],
     "targets": null,
-    "mod_time": "2024-04-30 20:52:23 +0000",
+    "mod_time": "2024-11-15 11:11:41 +0000",
     "path": "/modules/auxiliary/gather/windows_secrets_dump.rb",
     "is_install_path": true,
     "ref_name": "gather/windows_secrets_dump",
@@ -41979,6 +42109,70 @@
 
     ]
   },
+  "auxiliary_scanner/http/strapi_3_password_reset": {
+    "name": "Strapi CMS Unauthenticated Password Reset",
+    "fullname": "auxiliary/scanner/http/strapi_3_password_reset",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": "2022-02-09",
+    "type": "auxiliary",
+    "author": [
+      "WackyH4cker",
+      "h00die"
+    ],
+    "description": "This module abuses the mishandling of a password reset request for\n          Strapi CMS version 3.0.0-beta.17.4 to change the password of the admin user.\n\n          Successfully tested against Strapi CMS version 3.0.0-beta.17.4.",
+    "references": [
+      "URL-https://vulners.com/cve/CVE-2019-18818",
+      "URL-https://github.com/strapi/strapi/releases/tag/v3.0.0-beta.17.4",
+      "URL-https://github.com/strapi/strapi/pull/4443",
+      "CVE-2019-18818",
+      "EDB-50716"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": null,
+    "mod_time": "2024-11-16 15:47:54 +0000",
+    "path": "/modules/auxiliary/scanner/http/strapi_3_password_reset.rb",
+    "is_install_path": true,
+    "ref_name": "scanner/http/strapi_3_password_reset",
+    "check": false,
+    "post_auth": true,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+
+      ],
+      "SideEffects": [
+        "ioc-in-logs"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": false,
+    "actions": [
+
+    ]
+  },
   "auxiliary_scanner/http/support_center_plus_directory_traversal": {
     "name": "ManageEngine Support Center Plus Directory Traversal",
     "fullname": "auxiliary/scanner/http/support_center_plus_directory_traversal",
@@ -55790,7 +55984,7 @@
       "microsoft-ds"
     ],
     "targets": null,
-    "mod_time": "2024-05-07 10:54:35 +0000",
+    "mod_time": "2024-11-11 12:33:11 +0000",
     "path": "/modules/auxiliary/scanner/smb/smb_version.rb",
     "is_install_path": true,
     "ref_name": "scanner/smb/smb_version",
@@ -57642,6 +57836,67 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
+    },
+    "session_types": false,
+    "needs_cleanup": false,
+    "actions": [
+
+    ]
+  },
+  "auxiliary_scanner/teamcity/teamcity_login": {
+    "name": "JetBrains TeamCity Login Scanner",
+    "fullname": "auxiliary/scanner/teamcity/teamcity_login",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": null,
+    "type": "auxiliary",
+    "author": [
+      "adfoster-r7",
+      "sjanusz-r7"
+    ],
+    "description": "This module performs login attempts against a JetBrains TeamCity webpage to bruteforce possible credentials.",
+    "references": [
+
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 8111,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": null,
+    "mod_time": "2024-11-04 16:58:32 +0000",
+    "path": "/modules/auxiliary/scanner/teamcity/teamcity_login.rb",
+    "is_install_path": true,
+    "ref_name": "scanner/teamcity/teamcity_login",
+    "check": false,
+    "post_auth": true,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+
+      ],
+      "SideEffects": [
+        "ioc-in-logs",
+        "account-lockouts"
+      ]
     },
     "session_types": false,
     "needs_cleanup": false,
@@ -61554,7 +61809,7 @@
       "https"
     ],
     "targets": null,
-    "mod_time": "2024-11-04 13:37:23 +0000",
+    "mod_time": "2024-11-12 18:23:31 +0000",
     "path": "/modules/auxiliary/server/relay/esc8.rb",
     "is_install_path": true,
     "ref_name": "server/relay/esc8",
@@ -75751,6 +76006,69 @@
     "session_types": false,
     "needs_cleanup": null
   },
+  "exploit_linux/http/judge0_sandbox_escape_cve_2024_28189": {
+    "name": "Judge0 sandbox escape",
+    "fullname": "exploit/linux/http/judge0_sandbox_escape_cve_2024_28189",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-03-04",
+    "type": "exploit",
+    "author": [
+      "Tanto Security",
+      "Takahiro Yokoyama"
+    ],
+    "description": "Judge0 does not account for symlinks placed inside the sandbox directory,\n          which can be leveraged by an attacker to write to arbitrary files and gain code execution outside of the sandbox.",
+    "references": [
+      "CVE-2024-28185",
+      "CVE-2024-28189",
+      "URL-https://tantosec.com/blog/judge0/"
+    ],
+    "platform": "Linux",
+    "arch": "",
+    "rport": 2358,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "Linux Command"
+    ],
+    "mod_time": "2024-10-23 07:29:21 +0000",
+    "path": "/modules/exploits/linux/http/judge0_sandbox_escape_cve_2024_28189.rb",
+    "is_install_path": true,
+    "ref_name": "linux/http/judge0_sandbox_escape_cve_2024_28189",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "config-changes",
+        "artifacts-on-disk",
+        "ioc-in-logs"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": true
+  },
   "exploit_linux/http/kafka_ui_unauth_rce_cve_2023_52251": {
     "name": "Kafka UI Unauthenticated Remote Command Execution via the Groovy Filter option.",
     "fullname": "exploit/linux/http/kafka_ui_unauth_rce_cve_2023_52251",
@@ -80585,6 +80903,68 @@
     "session_types": false,
     "needs_cleanup": null
   },
+  "exploit_linux/http/projectsend_unauth_rce": {
+    "name": "ProjectSend r1295 - r1605 Unauthenticated Remote Code Execution",
+    "fullname": "exploit/linux/http/projectsend_unauth_rce",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-07-19",
+    "type": "exploit",
+    "author": [
+      "Florent Sicchio",
+      "Hugo Clout",
+      "ostrichgolf"
+    ],
+    "description": "This module exploits an improper authorization vulnerability in ProjectSend versions r1295 through r1605.\n          The vulnerability allows an unauthenticated attacker to obtain remote code execution by enabling user registration,\n          disabling the whitelist of allowed file extensions, and uploading a malicious PHP file to the server.",
+    "references": [
+      "URL-https://github.com/projectsend/projectsend/commit/193367d937b1a59ed5b68dd4e60bd53317473744",
+      "URL-https://www.synacktiv.com/sites/default/files/2024-07/synacktiv-projectsend-multiple-vulnerabilities.pdf"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "PHP Command"
+    ],
+    "mod_time": "2024-08-30 20:22:52 +0000",
+    "path": "/modules/exploits/linux/http/projectsend_unauth_rce.rb",
+    "is_install_path": true,
+    "ref_name": "linux/http/projectsend_unauth_rce",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk",
+        "ioc-in-logs"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
   "exploit_linux/http/pulse_secure_cmd_exec": {
     "name": "Pulse Secure VPN Arbitrary Command Execution",
     "fullname": "exploit/linux/http/pulse_secure_cmd_exec",
@@ -80718,6 +81098,72 @@
       ],
       "RelatedModules": [
         "auxiliary/gather/pulse_secure_file_disclosure"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
+  "exploit_linux/http/pyload_js2py_cve_2024_39205": {
+    "name": "Pyload RCE (CVE-2024-39205) with js2py sandbox escape (CVE-2024-28397)",
+    "fullname": "exploit/linux/http/pyload_js2py_cve_2024_39205",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-10-28",
+    "type": "exploit",
+    "author": [
+      "Marven11",
+      "Spencer McIntyre",
+      "jheysel-r7"
+    ],
+    "description": "CVE-2024-28397 is sandbox escape in js2py (<=0.74) which is a popular python package that can evaluate\n          javascript code inside a python interpreter. The vulnerability allows for an attacker to obtain a reference\n          to a python object in the js2py environment enabling them to escape the sandbox, bypass pyimport restrictions\n          and execute arbitrary commands on the host. At the time of writing no patch has been released, version 0.74\n          is the latest version of js2py which was released Nov 6, 2022.\n\n          CVE-2024-39205 is an remote code execution vulnerability in Pyload (<=0.5.0b3.dev85) which is an open-source\n          download manager designed to automate file downloads from various online sources. Pyload is vulnerable because\n          it exposes the vulnerable js2py functionality mentioned above on the /flash/addcrypted2 API endpoint.\n          This endpoint was designed to only accept connections from localhost but by manipulating the HOST header we\n          can bypass this restriction in order to access the API to achieve unauth RCE.",
+    "references": [
+      "CVE-2024-39205",
+      "CVE-2024-28397",
+      "URL-https://github.com/Marven11/CVE-2024-39205-Pyload-RCE",
+      "URL-https://github.com/pyload/pyload/security/advisories/GHSA-w7hq-f2pj-c53g",
+      "URL-https://github.com/Marven11/CVE-2024-28397-js2py-Sandbox-Escape"
+    ],
+    "platform": "Linux,Unix",
+    "arch": "cmd, x86, x64",
+    "rport": 9666,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "Unix Command",
+      "Linux Dropper"
+    ],
+    "mod_time": "2024-11-14 12:47:35 +0000",
+    "path": "/modules/exploits/linux/http/pyload_js2py_cve_2024_39205.rb",
+    "is_install_path": true,
+    "ref_name": "linux/http/pyload_js2py_cve_2024_39205",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+        "ioc-in-logs",
+        "artifacts-on-disk"
       ]
     },
     "session_types": false,
@@ -95666,6 +96112,69 @@
     "post_auth": true,
     "default_credential": false,
     "notes": {
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
+  "exploit_multi/acronis_cyber_protect_unauth_rce_cve_2022_3405": {
+    "name": "Acronis Cyber Protect/Backup remote code execution",
+    "fullname": "exploit/multi/acronis_cyber_protect_unauth_rce_cve_2022_3405",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2022-11-08",
+    "type": "exploit",
+    "author": [
+      "h00die-gr3y <h00die.gr3y@gmail.com>",
+      "Sandro Tolksdorf of usd AG."
+    ],
+    "description": "Acronis Cyber Protect or Backup is an enterprise backup/recovery solution for all,\n          compute, storage and application resources. Businesses and Service Providers are using it\n          to protect and backup all IT assets in their IT environment.\n          The Acronis Cyber Protect appliance, in its default configuration, allows the anonymous\n          registration of new protect/backup agents on new endpoints. This API endpoint also\n          generates bearer tokens which the agent then uses to authenticate to the appliance.\n          As the management web console is running on the same port as the API for the agents, this\n          bearer token is also valid for any actions on the web console. This allows an attacker\n          with network access to the appliance to start the registration of a new agent, retrieve a\n          bearer token that provides admin access to the available functions in the web console.\n\n          The web console contains multiple possibilities to execute arbitrary commands on both the\n          agents (e.g., via PreCommands for a backup) and also the appliance (e.g., via a Validation\n          job on the agent of the appliance). These options can easily be set with the provided bearer\n          token, which leads to a complete compromise of all agents and the appliance itself.\n\n          You can either use the module `auxiliary/gather/acronis_cyber_protect_machine_info_disclosure`\n          to collect target info for exploitation in this module. Or just run this module standalone and\n          it will try to exploit the first online endpoint matching your target and payload settings\n          configured at the module.\n\n          Acronis Cyber Protect 15 (Windows, Linux) before build 29486 and\n          Acronis Cyber Backup 12.5 (Windows, Linux) before build 16545 are vulnerable.",
+    "references": [
+      "CVE-2022-3405",
+      "URL-https://herolab.usd.de/security-advisories/usd-2022-0008/",
+      "URL-https://attackerkb.com/topics/WVI3r5eNIc/cve-2022-3405"
+    ],
+    "platform": "Linux,Unix,Windows",
+    "arch": "cmd",
+    "rport": 9877,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "Unix/Linux Command",
+      "Windows Command"
+    ],
+    "mod_time": "2024-11-28 08:57:21 +0000",
+    "path": "/modules/exploits/multi/acronis_cyber_protect_unauth_rce_cve_2022_3405.rb",
+    "is_install_path": true,
+    "ref_name": "multi/acronis_cyber_protect_unauth_rce_cve_2022_3405",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk",
+        "ioc-in-logs"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ]
     },
     "session_types": false,
     "needs_cleanup": null
@@ -117971,6 +118480,71 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
+  "exploit_multi/misc/cups_ipp_remote_code_execution": {
+    "name": "CUPS IPP Attributes LAN Remote Code Execution",
+    "fullname": "exploit/multi/misc/cups_ipp_remote_code_execution",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": "2024-09-26",
+    "type": "exploit",
+    "author": [
+      "Simone Margaritelli",
+      "Rick de Jager",
+      "David Batley",
+      "Spencer McIntyre",
+      "RageLtMan <rageltman@sempervictus>",
+      "Ryan Emmons"
+    ],
+    "description": "This module exploits vulnerabilities in OpenPrinting CUPS, which is running by\n          default on most Linux distributions. The vulnerabilities allow an attacker on\n          the LAN to advertise a malicious printer that triggers remote code execution\n          when a victim sends a print job to the malicious printer. Successful exploitation\n          requires user interaction, but no CUPS services need to be reachable via accessible\n          ports. Code execution occurs in the context of the lp user. Affected versions\n          are cups-browsed <= 2.0.1, libcupsfilters <= 2.1b1, libppd <= 2.1b1, and\n          cups-filters <= 2.0.1.",
+    "references": [
+      "CVE-2024-47076",
+      "CVE-2024-47175",
+      "CVE-2024-47177",
+      "CVE-2024-47176",
+      "URL-https://www.evilsocket.net/2024/09/26/Attacking-UNIX-systems-via-CUPS-Part-I/",
+      "URL-https://github.com/RickdeJager/cupshax",
+      "URL-https://github.com/OpenPrinting/cups-browsed/security/advisories/GHSA-rj88-6mr5-rcw8",
+      "URL-https://github.com/OpenPrinting/libcupsfilters/security/advisories/GHSA-w63j-6g73-wmg5",
+      "URL-https://github.com/OpenPrinting/libppd/security/advisories/GHSA-7xfx-47qg-grp6",
+      "URL-https://github.com/OpenPrinting/cups-filters/security/advisories/GHSA-p9rh-jxmq-gq47",
+      "URL-https://github.com/h2g2bob/ipp-server/"
+    ],
+    "platform": "Linux,Unix",
+    "arch": "cmd",
+    "rport": null,
+    "autofilter_ports": [
+
+    ],
+    "autofilter_services": [
+
+    ],
+    "targets": [
+      "Default"
+    ],
+    "mod_time": "2024-11-21 15:14:46 +0000",
+    "path": "/modules/exploits/multi/misc/cups_ipp_remote_code_execution.rb",
+    "is_install_path": true,
+    "ref_name": "multi/misc/cups_ipp_remote_code_execution",
+    "check": false,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "event-dependent"
+      ],
+      "SideEffects": [
+        "ioc-in-logs",
+        "artifacts-on-disk"
+      ]
     },
     "session_types": false,
     "needs_cleanup": null
@@ -184612,6 +185186,59 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
+  "exploit_windows/misc/ivanti_agent_portal_cmdexec": {
+    "name": "Ivanti EPM Agent Portal Command Execution",
+    "fullname": "exploit/windows/misc/ivanti_agent_portal_cmdexec",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2023-06-07",
+    "type": "exploit",
+    "author": [
+      "James Horseman",
+      "Zach Hanley",
+      "Spencer McIntyre"
+    ],
+    "description": "This module leverages an unauthenticated RCE in Ivanti's EPM Agent Portal where a RPC client can invoke a method\n          which will run an attacker-specified string on the remote target as NT AUTHORITY\\SYSTEM.\n          This vulnerability is present in versions prior to EPM 2021.1 Su4 and EPM 2022 Su2.",
+    "references": [
+      "CVE-2023-28324",
+      "URL-https://forums.ivanti.com/s/article/SA-2023-06-06-CVE-2023-28324?language=en_US",
+      "URL-https://github.com/horizon3ai/CVE-2023-28324"
+    ],
+    "platform": "Windows",
+    "arch": "cmd",
+    "rport": null,
+    "autofilter_ports": [
+
+    ],
+    "autofilter_services": [
+
+    ],
+    "targets": [
+      "Automatic"
+    ],
+    "mod_time": "2024-11-20 13:51:39 +0000",
+    "path": "/modules/exploits/windows/misc/ivanti_agent_portal_cmdexec.rb",
+    "is_install_path": true,
+    "ref_name": "windows/misc/ivanti_agent_portal_cmdexec",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ]
     },
     "session_types": false,
     "needs_cleanup": null
