@@ -456,7 +456,7 @@ GEM
     rex-text (0.2.59)
     rex-zip (0.1.5)
       rex-text
-    rexml (3.3.9)
+    rexml (3.4.0)
     rkelly-remix (0.0.7)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -548,7 +548,7 @@ GEM
       macaddr (~> 1.0)
     warden (1.2.9)
       rack (>= 2.0.9)
-    webrick (1.8.2)
+    webrick (1.9.1)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
