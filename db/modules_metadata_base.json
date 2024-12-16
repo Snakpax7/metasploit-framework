@@ -771,7 +771,7 @@
       "microsoft-ds"
     ],
     "targets": null,
-    "mod_time": "2024-04-26 12:33:43 +0000",
+    "mod_time": "2024-11-12 12:08:18 +0000",
     "path": "/modules/auxiliary/admin/dcerpc/cve_2022_26923_certifried.rb",
     "is_install_path": true,
     "ref_name": "admin/dcerpc/cve_2022_26923_certifried",
@@ -874,20 +874,21 @@
       }
     ]
   },
-  "auxiliary_admin/dcerpc/samr_computer": {
-    "name": "SAMR Computer Management",
-    "fullname": "auxiliary/admin/dcerpc/samr_computer",
+  "auxiliary_admin/dcerpc/samr_account": {
+    "name": "SAMR Account Management",
+    "fullname": "auxiliary/admin/dcerpc/samr_account",
     "aliases": [
-
+      "auxiliary/admin/dcerpc/samr_computer"
     ],
     "rank": 300,
     "disclosure_date": null,
     "type": "auxiliary",
     "author": [
       "JaGoTu",
-      "Spencer McIntyre"
+      "Spencer McIntyre",
+      "smashery"
     ],
-    "description": "Add, lookup and delete computer / machine accounts via MS-SAMR. By default\n          standard active directory users can add up to 10 new computers to the\n          domain. Administrative privileges however are required to delete the\n          created accounts.",
+    "description": "Add, lookup and delete user / machine accounts via MS-SAMR. By default\n          standard active directory users can add up to 10 new computers to the\n          domain (MachineAccountQuota). Administrative privileges however are required\n          to delete the created accounts, or to create/delete user accounts.",
     "references": [
       "URL-https://github.com/SecureAuthCorp/impacket/blob/master/examples/addcomputer.py"
     ],
@@ -903,10 +904,10 @@
       "microsoft-ds"
     ],
     "targets": null,
-    "mod_time": "2024-04-16 16:43:30 +0000",
-    "path": "/modules/auxiliary/admin/dcerpc/samr_computer.rb",
+    "mod_time": "2024-12-09 08:49:04 +0000",
+    "path": "/modules/auxiliary/admin/dcerpc/samr_account.rb",
     "is_install_path": true,
-    "ref_name": "admin/dcerpc/samr_computer",
+    "ref_name": "admin/dcerpc/samr_account",
     "check": false,
     "post_auth": false,
     "default_credential": false,
@@ -919,6 +920,10 @@
       ],
       "SideEffects": [
         "ioc-in-logs"
+      ],
+      "AKA": [
+        "samr_computer",
+        "samr_user"
       ]
     },
     "session_types": [
@@ -931,12 +936,16 @@
         "description": "Add a computer account"
       },
       {
-        "name": "DELETE_COMPUTER",
-        "description": "Delete a computer account"
+        "name": "ADD_USER",
+        "description": "Add a user account"
       },
       {
-        "name": "LOOKUP_COMPUTER",
-        "description": "Lookup a computer account"
+        "name": "DELETE_ACCOUNT",
+        "description": "Delete a computer or user account"
+      },
+      {
+        "name": "LOOKUP_ACCOUNT",
+        "description": "Lookup a computer or user account"
       }
     ]
   },
@@ -6838,6 +6847,66 @@
       }
     ]
   },
+  "auxiliary_admin/ldap/change_password": {
+    "name": "Change Password",
+    "fullname": "auxiliary/admin/ldap/change_password",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": null,
+    "type": "auxiliary",
+    "author": [
+      "smashery"
+    ],
+    "description": "This module allows Active Directory users to change their own passwords, or reset passwords for\n          accounts they have privileges over.",
+    "references": [
+      "URL-https://github.com/fortra/impacket/blob/master/examples/changepasswd.py",
+      "URL-https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6e803168-f140-4d23-b2d3-c3a8ab5917d2"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 389,
+    "autofilter_ports": [
+
+    ],
+    "autofilter_services": [
+
+    ],
+    "targets": null,
+    "mod_time": "2024-12-06 16:47:25 +0000",
+    "path": "/modules/auxiliary/admin/ldap/change_password.rb",
+    "is_install_path": true,
+    "ref_name": "admin/ldap/change_password",
+    "check": false,
+    "post_auth": true,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+
+      ],
+      "SideEffects": [
+        "ioc-in-logs"
+      ],
+      "Reliability": [
+
+      ]
+    },
+    "session_types": [
+      "ldap"
+    ],
+    "needs_cleanup": false,
+    "actions": [
+      {
+        "name": "CHANGE",
+        "description": "Change the user's password, knowing the existing password"
+      },
+      {
+        "name": "RESET",
+        "description": "Reset a target user's password, having permissions over their account"
+      }
+    ]
+  },
   "auxiliary_admin/ldap/rbcd": {
     "name": "Role Base Constrained Delegation",
     "fullname": "auxiliary/admin/ldap/rbcd",
@@ -10479,6 +10548,75 @@
       {
         "name": "upload",
         "description": "Upload a file"
+      }
+    ]
+  },
+  "auxiliary_admin/smb/change_password": {
+    "name": "SMB Password Change",
+    "fullname": "auxiliary/admin/smb/change_password",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": null,
+    "type": "auxiliary",
+    "author": [
+      "smashery"
+    ],
+    "description": "Change the password of an account using SMB. This provides several different\n          APIs, each of which have their respective benefits and drawbacks.",
+    "references": [
+      "URL-https://github.com/fortra/impacket/blob/master/examples/changepasswd.py"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 445,
+    "autofilter_ports": [
+      139,
+      445
+    ],
+    "autofilter_services": [
+      "netbios-ssn",
+      "microsoft-ds"
+    ],
+    "targets": null,
+    "mod_time": "2024-12-06 14:36:05 +0000",
+    "path": "/modules/auxiliary/admin/smb/change_password.rb",
+    "is_install_path": true,
+    "ref_name": "admin/smb/change_password",
+    "check": false,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Reliability": [
+
+      ],
+      "Stability": [
+
+      ],
+      "SideEffects": [
+        "ioc-in-logs"
+      ]
+    },
+    "session_types": [
+      "smb"
+    ],
+    "needs_cleanup": false,
+    "actions": [
+      {
+        "name": "CHANGE",
+        "description": "Change the password, knowing the existing one. New AES kerberos keys will be generated."
+      },
+      {
+        "name": "CHANGE_NTLM",
+        "description": "Change the password to a NTLM hash value, knowing the existing password. AES kerberos authentication will not work until a standard password change occurs."
+      },
+      {
+        "name": "RESET",
+        "description": "Reset the target's password without knowing the existing one (requires appropriate permissions). New AES kerberos keys will be generated."
+      },
+      {
+        "name": "RESET_NTLM",
+        "description": "Reset the target's NTLM hash, without knowing the existing password. AES kerberos authentication will not work until a standard password change occurs."
       }
     ]
   },
@@ -27768,6 +27906,64 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
+    },
+    "session_types": false,
+    "needs_cleanup": false,
+    "actions": [
+
+    ]
+  },
+  "auxiliary_gather/x11_keyboard_spy": {
+    "name": "X11 Keylogger",
+    "fullname": "auxiliary/gather/x11_keyboard_spy",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": "1997-07-01",
+    "type": "auxiliary",
+    "author": [
+      "h00die",
+      "nir tzachar"
+    ],
+    "description": "This module binds to an open X11 host to log keystrokes. This is a fairly\n          close copy of the old xspy c program which has been on Kali for a long time.\n          The module works by connecting to the X11 session, creating a background\n          window, binding a keyboard to it and creating a notification alert when a key\n          is pressed.\n\n          One of the major limitations of xspy, and thus this module, is that it polls\n          at a very fast rate, faster than a key being pressed is released (especially before\n          the repeat delay is hit). To combat printing multiple characters for a single key\n          press, repeat characters arent printed when typed in a very fast manor. This is also\n          an imperfect keylogger in that keystrokes arent stored and forwarded but status\n          displayed at poll time. Keys may be repeated or missing.",
+    "references": [
+      "URL-https://www.kali.org/tools/xspy/",
+      "CVE-1999-0526"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 6000,
+    "autofilter_ports": [
+
+    ],
+    "autofilter_services": [
+
+    ],
+    "targets": null,
+    "mod_time": "2024-11-27 14:29:44 +0000",
+    "path": "/modules/auxiliary/gather/x11_keyboard_spy.rb",
+    "is_install_path": true,
+    "ref_name": "gather/x11_keyboard_spy",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+
+      ],
+      "SideEffects": [
+
+      ],
+      "AKA": [
+        "xspy"
+      ],
+      "RelatedModules": [
+        "auxiliary/scanner/x11/open_x11"
+      ]
     },
     "session_types": false,
     "needs_cleanup": false,
@@ -45756,6 +45952,67 @@
       }
     ]
   },
+  "auxiliary_scanner/http/wp_perfect_survey_sqli": {
+    "name": "WordPress Plugin Perfect Survey 1.5.1 SQLi (Unauthenticated)",
+    "fullname": "auxiliary/scanner/http/wp_perfect_survey_sqli",
+    "aliases": [
+
+    ],
+    "rank": 300,
+    "disclosure_date": "2021-10-05",
+    "type": "auxiliary",
+    "author": [
+      "Aaryan Golatkar",
+      "Ron Jost"
+    ],
+    "description": "This module exploits a SQL injection vulnerability in the Perfect Survey\n          plugin for WordPress (version 1.5.1). An unauthenticated attacker can\n          exploit the SQLi to retrieve sensitive information such as usernames,\n          emails, and password hashes from the `wp_users` table.",
+    "references": [
+      "EDB-50766",
+      "CVE-2021-24762"
+    ],
+    "platform": "",
+    "arch": "",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": null,
+    "mod_time": "2024-12-10 14:48:18 +0000",
+    "path": "/modules/auxiliary/scanner/http/wp_perfect_survey_sqli.rb",
+    "is_install_path": true,
+    "ref_name": "scanner/http/wp_perfect_survey_sqli",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "ioc-in-logs"
+      ],
+      "Reliability": [
+
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": false,
+    "actions": [
+
+    ]
+  },
   "auxiliary_scanner/http/wp_registrationmagic_sqli": {
     "name": "Wordpress RegistrationMagic task_ids Authenticated SQLi",
     "fullname": "auxiliary/scanner/http/wp_registrationmagic_sqli",
@@ -57073,7 +57330,7 @@
 
     ],
     "targets": null,
-    "mod_time": "2024-06-03 11:02:15 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/auxiliary/scanner/ssh/eaton_xpert_backdoor.rb",
     "is_install_path": true,
     "ref_name": "scanner/ssh/eaton_xpert_backdoor",
@@ -57119,7 +57376,7 @@
 
     ],
     "targets": null,
-    "mod_time": "2024-06-03 11:02:15 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/auxiliary/scanner/ssh/fortinet_backdoor.rb",
     "is_install_path": true,
     "ref_name": "scanner/ssh/fortinet_backdoor",
@@ -57251,7 +57508,7 @@
 
     ],
     "targets": null,
-    "mod_time": "2024-06-03 11:02:15 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/auxiliary/scanner/ssh/libssh_auth_bypass.rb",
     "is_install_path": true,
     "ref_name": "scanner/ssh/libssh_auth_bypass",
@@ -59940,7 +60197,8 @@
     "disclosure_date": null,
     "type": "auxiliary",
     "author": [
-      "tebo <tebodell@gmail.com>"
+      "tebo <tebodell@gmail.com>",
+      "h00die"
     ],
     "description": "This module scans for X11 servers that allow anyone\n        to connect without authentication.",
     "references": [
@@ -59957,7 +60215,7 @@
 
     ],
     "targets": null,
-    "mod_time": "2017-07-24 06:26:21 +0000",
+    "mod_time": "2024-11-27 14:29:44 +0000",
     "path": "/modules/auxiliary/scanner/x11/open_x11.rb",
     "is_install_path": true,
     "ref_name": "scanner/x11/open_x11",
@@ -59965,6 +60223,18 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+
+      ],
+      "Reliability": [
+
+      ],
+      "RelatedModules": [
+        "auxiliary/gather/x11_keyboard_spy"
+      ]
     },
     "session_types": false,
     "needs_cleanup": false,
@@ -67164,7 +67434,7 @@
     "targets": [
       "Apple iOS"
     ],
-    "mod_time": "2022-04-18 23:36:23 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/apple_ios/ssh/cydia_default_ssh.rb",
     "is_install_path": true,
     "ref_name": "apple_ios/ssh/cydia_default_ssh",
@@ -67607,7 +67877,7 @@
       "PHP In-Memory",
       "Interactive SSH with jail break"
     ],
-    "mod_time": "2024-06-14 10:45:19 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/freebsd/http/junos_phprc_auto_prepend_file.rb",
     "is_install_path": true,
     "ref_name": "freebsd/http/junos_phprc_auto_prepend_file",
@@ -70582,6 +70852,67 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
+    },
+    "session_types": false,
+    "needs_cleanup": true
+  },
+  "exploit_linux/http/chamilo_bigupload_webshell": {
+    "name": "Chamilo v1.11.24 Unrestricted File Upload PHP Webshell",
+    "fullname": "exploit/linux/http/chamilo_bigupload_webshell",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2023-11-28",
+    "type": "exploit",
+    "author": [
+      "Ngo Wei Lin",
+      "jheysel-r7"
+    ],
+    "description": "Chamilo LMS is a free software e-learning and content management system. In versions prior to <= v1.11.24\n          a webshell can be uploaded via the bigload.php endpoint. If the GET request parameter `action` is set to\n          `post-unsupported` file extension checks are skipped allowing for attacker controlled .php files to be uploaded to:\n          `/main/inc/lib/javascript/bigupload/files/` if the `/files/` directory already exists - it does not exist\n          by default.",
+    "references": [
+      "URL-https://starlabs.sg/advisories/23/23-4220/",
+      "URL-https://github.com/H4cking4All/CVE-2023-4220/tree/main",
+      "CVE-2023-4220"
+    ],
+    "platform": "PHP",
+    "arch": "php",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "PHP"
+    ],
+    "mod_time": "2024-11-14 10:46:11 +0000",
+    "path": "/modules/exploits/linux/http/chamilo_bigupload_webshell.rb",
+    "is_install_path": true,
+    "ref_name": "linux/http/chamilo_bigupload_webshell",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ]
     },
     "session_types": false,
     "needs_cleanup": true
@@ -75814,6 +76145,70 @@
     "session_types": false,
     "needs_cleanup": null
   },
+  "exploit_linux/http/ivanti_connect_secure_rce_cve_2024_37404": {
+    "name": "Ivanti Connect Secure Authenticated Remote Code Execution via OpenSSL CRLF Injection",
+    "fullname": "exploit/linux/http/ivanti_connect_secure_rce_cve_2024_37404",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-10-08",
+    "type": "exploit",
+    "author": [
+      "Richard Warren",
+      "Christophe De La Fuente"
+    ],
+    "description": "This module exploits a CRLF injection vulnerability in Ivanti Connect\n          Secure to achieve remote code execution (CVE-2024-37404). Versions\n          prior to 22.7R2.1 are vulnerable. Note that Ivanti Policy Secure\n          versions prior to 22.7R1.1 are also vulnerable but this module\n          doesn't support this software.\n\n          Valid administrative credentials are required. A non-administrative\n          user is also required and can be created using the administrative\n          account, if needed.",
+    "references": [
+      "CVE-2024-37404",
+      "URL-https://attackerkb.com/topics/FI5vcuGwyM/cve-2024-37404",
+      "URL-https://forums.ivanti.com/s/article/Security-Advisory-Ivanti-Connect-Secure-and-Policy-Secure-CVE-2024-37404",
+      "URL-https://blog.amberwolf.com/blog/2024/october/cve-2024-37404-ivanti-connect-secure-authenticated-rce-via-openssl-crlf-injection/"
+    ],
+    "platform": "Linux",
+    "arch": "x86",
+    "rport": 443,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "Automatic"
+    ],
+    "mod_time": "2024-12-03 18:33:43 +0000",
+    "path": "/modules/exploits/linux/http/ivanti_connect_secure_rce_cve_2024_37404.rb",
+    "is_install_path": true,
+    "ref_name": "linux/http/ivanti_connect_secure_rce_cve_2024_37404",
+    "check": true,
+    "post_auth": true,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk",
+        "ioc-in-logs",
+        "account-logout"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
   "exploit_linux/http/ivanti_csa_unauth_rce_cve_2021_44529": {
     "name": "Ivanti Cloud Services Appliance (CSA) Command Injection",
     "fullname": "exploit/linux/http/ivanti_csa_unauth_rce_cve_2021_44529",
@@ -77938,6 +78333,68 @@
       "SideEffects": [
         "ioc-in-logs",
         "artifacts-on-disk"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
+  "exploit_linux/http/moodle_rce": {
+    "name": "Moodle Remote Code Execution (CVE-2024-43425)",
+    "fullname": "exploit/linux/http/moodle_rce",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-08-27",
+    "type": "exploit",
+    "author": [
+      "Michael Heinzl",
+      "RedTeam Pentesting GmbH"
+    ],
+    "description": "This module exploits a command injection vulnerability in Moodle (CVE-2024-43425) to obtain remote code execution.\n          Affected versions include 4.4 to 4.4.1, 4.3 to 4.3.5, 4.2 to 4.2.8, 4.1 to 4.1.11, and earlier unsupported versions.",
+    "references": [
+      "URL-https://blog.redteam-pentesting.de/2024/moodle-rce/",
+      "URL-https://www.redteam-pentesting.de/en/advisories/rt-sa-2024-009/",
+      "URL-https://moodle.org/mod/forum/discuss.php?d=461193",
+      "CVE-2024-43425"
+    ],
+    "platform": "Linux",
+    "arch": "cmd",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "Linux Command"
+    ],
+    "mod_time": "2024-11-13 03:40:22 +0000",
+    "path": "/modules/exploits/linux/http/moodle_rce.rb",
+    "is_install_path": true,
+    "ref_name": "linux/http/moodle_rce",
+    "check": false,
+    "post_auth": true,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "event-dependent"
+      ],
+      "SideEffects": [
+        "ioc-in-logs"
       ]
     },
     "session_types": false,
@@ -80919,8 +81376,10 @@
     ],
     "description": "This module exploits an improper authorization vulnerability in ProjectSend versions r1295 through r1605.\n          The vulnerability allows an unauthenticated attacker to obtain remote code execution by enabling user registration,\n          disabling the whitelist of allowed file extensions, and uploading a malicious PHP file to the server.",
     "references": [
+      "CVE-2024-11680",
       "URL-https://github.com/projectsend/projectsend/commit/193367d937b1a59ed5b68dd4e60bd53317473744",
-      "URL-https://www.synacktiv.com/sites/default/files/2024-07/synacktiv-projectsend-multiple-vulnerabilities.pdf"
+      "URL-https://www.synacktiv.com/sites/default/files/2024-07/synacktiv-projectsend-multiple-vulnerabilities.pdf",
+      "CVE-2024-11680"
     ],
     "platform": "",
     "arch": "",
@@ -80943,7 +81402,7 @@
     "targets": [
       "PHP Command"
     ],
-    "mod_time": "2024-08-30 20:22:52 +0000",
+    "mod_time": "2024-12-11 13:54:06 +0000",
     "path": "/modules/exploits/linux/http/projectsend_unauth_rce.rb",
     "is_install_path": true,
     "ref_name": "linux/http/projectsend_unauth_rce",
@@ -84268,7 +84727,7 @@
     "targets": [
       "Ubiquiti airOS < 5.6.2"
     ],
-    "mod_time": "2022-04-14 17:25:48 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/http/ubiquiti_airos_file_upload.rb",
     "is_install_path": true,
     "ref_name": "linux/http/ubiquiti_airos_file_upload",
@@ -91400,6 +91859,64 @@
 
     ]
   },
+  "exploit_linux/local/vcenter_sudo_lpe": {
+    "name": "vCenter Sudo Privilege Escalation",
+    "fullname": "exploit/linux/local/vcenter_sudo_lpe",
+    "aliases": [
+
+    ],
+    "rank": 500,
+    "disclosure_date": "2024-06-18",
+    "type": "exploit",
+    "author": [
+      "h00die",
+      "Matei \"Mal\" Badanoiu"
+    ],
+    "description": "VMware vCenter Server < 7.0.3 update R and < 8.0.2 update D\n          contains multiple local privilege escalation vulnerabilities\n          due to misconfiguration of sudo. An authenticated local user\n          with non-administrative privileges may exploit these issues\n          to elevate privileges to root on vCenter Server Appliance.\n\n          Tested against VMware vCenter Server Appliance 8.0.0.10000 20519528",
+    "references": [
+      "URL-https://support.broadcom.com/web/ecx/support-content-notification/-/external/content/SecurityAdvisories/0/24453",
+      "URL-https://github.com/mbadanoiu/CVE-2024-37081/blob/main/VMware%20vCenter%20-%20CVE-2024-37081.pdf",
+      "CVE-2024-37081"
+    ],
+    "platform": "Linux",
+    "arch": "x86, x64",
+    "rport": null,
+    "autofilter_ports": [
+
+    ],
+    "autofilter_services": [
+
+    ],
+    "targets": [
+      "Auto"
+    ],
+    "mod_time": "2024-12-04 18:39:43 +0000",
+    "path": "/modules/exploits/linux/local/vcenter_sudo_lpe.rb",
+    "is_install_path": true,
+    "ref_name": "linux/local/vcenter_sudo_lpe",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk"
+      ]
+    },
+    "session_types": [
+      "shell",
+      "meterpreter"
+    ],
+    "needs_cleanup": true,
+    "actions": [
+
+    ]
+  },
   "exploit_linux/local/vmware_alsa_config": {
     "name": "VMware Workstation ALSA Config File Local Privilege Escalation",
     "fullname": "exploit/linux/local/vmware_alsa_config",
@@ -92060,6 +92577,59 @@
     "session_types": false,
     "needs_cleanup": null
   },
+  "exploit_linux/misc/asterisk_ami_originate_auth_rce": {
+    "name": "Asterisk AMI Originate Authenticated RCE",
+    "fullname": "exploit/linux/misc/asterisk_ami_originate_auth_rce",
+    "aliases": [
+
+    ],
+    "rank": 500,
+    "disclosure_date": "2024-08-08",
+    "type": "exploit",
+    "author": [
+      "Brendan Coles <bcoles@gmail.com>",
+      "h00die",
+      "NielsGaljaard"
+    ],
+    "description": "On Asterisk, prior to versions 18.24.2, 20.9.2, and 21.4.2 and certified-asterisk\n          versions 18.9-cert11 and 20.7-cert2, an AMI user with 'write=originate' may change\n          all configuration files in the '/etc/asterisk/' directory. Writing a new extension\n          can be created which performs a system command to achieve RCE as the asterisk service\n          user (typically asterisk).\n          Default parking lot in FreePBX is called \"Default lot\" on the website interface,\n          however its actually 'parkedcalls'.\n          Tested against Asterisk 19.8.0 and 18.16.0 on Freepbx SNG7-PBX16-64bit-2302-1.",
+    "references": [
+      "URL-https://github.com/asterisk/asterisk/security/advisories/GHSA-c4cg-9275-6w44",
+      "CVE-2024-42365"
+    ],
+    "platform": "Unix",
+    "arch": "",
+    "rport": 5038,
+    "autofilter_ports": [
+
+    ],
+    "autofilter_services": [
+
+    ],
+    "targets": [
+      "Unix Command"
+    ],
+    "mod_time": "2024-11-28 20:24:25 +0000",
+    "path": "/modules/exploits/linux/misc/asterisk_ami_originate_auth_rce.rb",
+    "is_install_path": true,
+    "ref_name": "linux/misc/asterisk_ami_originate_auth_rce",
+    "check": true,
+    "post_auth": true,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "ioc-in-logs",
+        "config-changes"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
   "exploit_linux/misc/asus_infosvr_auth_bypass_exec": {
     "name": "ASUS infosvr Auth Bypass Command Execution",
     "fullname": "exploit/linux/misc/asus_infosvr_auth_bypass_exec",
@@ -92351,6 +92921,58 @@
       "SideEffects": [
         "ioc-in-logs",
         "artifacts-on-disk"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
+  "exploit_linux/misc/fortimanager_rce_cve_2024_47575": {
+    "name": "Fortinet FortiManager Unauthenticated RCE",
+    "fullname": "exploit/linux/misc/fortimanager_rce_cve_2024_47575",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-10-23",
+    "type": "exploit",
+    "author": [
+      "sfewer-r7"
+    ],
+    "description": "This module exploits a missing authentication vulnerability affecting FortiManager and FortiManager\n          Cloud devices to achieve unauthenticated RCE with root privileges.\n\n          The vulnerable FortiManager versions are:\n          * 7.6.0\n          * 7.4.0 through 7.4.4\n          * 7.2.0 through 7.2.7\n          * 7.0.0 through 7.0.12\n          * 6.4.0 through 6.4.14\n          * 6.2.0 through 6.2.12\n\n          The vulnerable FortiManager Cloud versions are:\n          * 7.4.1 through 7.4.4\n          * 7.2.1 through 7.2.7\n          * 7.0.1 through 7.0.12\n          * 6.4 (all versions).",
+    "references": [
+      "CVE-2024-47575",
+      "URL-https://attackerkb.com/topics/OFBGprmpIE/cve-2024-47575/rapid7-analysis",
+      "URL-https://bishopfox.com/blog/a-look-at-fortijump-cve-2024-47575",
+      "URL-https://fortiguard.fortinet.com/psirt/FG-IR-24-423"
+    ],
+    "platform": "Linux,Unix",
+    "arch": "cmd",
+    "rport": 541,
+    "autofilter_ports": [
+
+    ],
+    "autofilter_services": [
+
+    ],
+    "targets": [
+      "Default"
+    ],
+    "mod_time": "2024-12-02 18:16:43 +0000",
+    "path": "/modules/exploits/linux/misc/fortimanager_rce_cve_2024_47575.rb",
+    "is_install_path": true,
+    "ref_name": "linux/misc/fortimanager_rce_cve_2024_47575",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+        "ioc-in-logs"
       ]
     },
     "session_types": false,
@@ -94927,7 +95549,7 @@
     "targets": [
       "Universal"
     ],
-    "mod_time": "2022-04-18 17:49:04 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/ceragon_fibeair_known_privkey.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/ceragon_fibeair_known_privkey",
@@ -94979,7 +95601,7 @@
     "targets": [
       "Cisco UCS Director < 6.7.2.0"
     ],
-    "mod_time": "2022-04-18 17:57:01 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/cisco_ucs_scpuser.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/cisco_ucs_scpuser",
@@ -95030,7 +95652,7 @@
     "targets": [
       "Universal"
     ],
-    "mod_time": "2022-04-18 19:12:50 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/exagrid_known_privkey.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/exagrid_known_privkey",
@@ -95082,7 +95704,7 @@
     "targets": [
       "Universal"
     ],
-    "mod_time": "2022-04-18 19:25:38 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/f5_bigip_known_privkey.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/f5_bigip_known_privkey",
@@ -95134,7 +95756,7 @@
     "targets": [
       "IBM Data Risk Manager <= 2.0.6.1"
     ],
-    "mod_time": "2022-04-18 19:34:49 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/ibm_drm_a3user.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/ibm_drm_a3user",
@@ -95183,7 +95805,7 @@
     "targets": [
       "Universal"
     ],
-    "mod_time": "2022-04-18 19:43:16 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/loadbalancerorg_enterprise_known_privkey.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/loadbalancerorg_enterprise_known_privkey",
@@ -95285,7 +95907,7 @@
     "targets": [
       "Micro Focus Operations Bridge Reporter (Linux) versions <= 10.40"
     ],
-    "mod_time": "2024-07-24 16:42:43 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/microfocus_obr_shrboadmin.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/microfocus_obr_shrboadmin",
@@ -95334,7 +95956,7 @@
     "targets": [
       "Universal"
     ],
-    "mod_time": "2022-04-18 20:14:57 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/quantum_dxi_known_privkey.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/quantum_dxi_known_privkey",
@@ -95383,7 +96005,7 @@
     "targets": [
       "Quantum vmPRO 3.1.2"
     ],
-    "mod_time": "2022-04-18 20:17:44 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/quantum_vmpro_backdoor.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/quantum_vmpro_backdoor",
@@ -95487,7 +96109,7 @@
     "targets": [
       "Symantec Messaging Gateway 9.5"
     ],
-    "mod_time": "2023-01-31 23:59:22 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/symantec_smg_ssh.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/symantec_smg_ssh",
@@ -95537,7 +96159,7 @@
     "targets": [
       "Universal"
     ],
-    "mod_time": "2023-01-31 23:59:22 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/vmware_vdp_known_privkey.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/vmware_vdp_known_privkey",
@@ -95614,7 +96236,7 @@
       "6.10_platform",
       "All"
     ],
-    "mod_time": "2023-10-23 06:54:38 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/linux/ssh/vmware_vrni_known_privkey.rb",
     "is_install_path": true,
     "ref_name": "linux/ssh/vmware_vrni_known_privkey",
@@ -110923,6 +111545,71 @@
     "session_types": false,
     "needs_cleanup": null
   },
+  "exploit_multi/http/primefaces_weak_encryption_rce": {
+    "name": "Primefaces Remote Code Execution Exploit",
+    "fullname": "exploit/multi/http/primefaces_weak_encryption_rce",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2016-02-15",
+    "type": "exploit",
+    "author": [
+      "Bjoern Schuette",
+      "h00die"
+    ],
+    "description": "This module exploits a Java Expression Language remote code execution flaw in the Primefaces JSF framework.\n          Primefaces versions prior to 5.2.21, 5.3.8 or 6.0 are vulnerable to a padding oracle attack,\n          due to the use of weak crypto and default encryption password and salt.\n\n          Tested against Docker image with Tomcat 7.0 with the Primefaces 5.2 showcase application. See\n          documentation for working payloads.",
+    "references": [
+      "CVE-2017-1000486",
+      "URL-https://blog.mindedsecurity.com/2016/02/rce-in-oracle-netbeans-opensource.html",
+      "URL-https://web.archive.org/web/20180515174733/https://cryptosense.com/blog/weak-encryption-flaw-in-primefaces",
+      "URL-https://schuette.se/2018/01/17/cve-2017-1000486-in-your-primeface/",
+      "URL-https://github.com/primefaces/primefaces/issues/1152",
+      "URL-https://github.com/pimps/CVE-2017-1000486/tree/master",
+      "EDB-43733"
+    ],
+    "platform": "BSD,Linux,OSX,Unix,Windows",
+    "arch": "cmd",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "Universal"
+    ],
+    "mod_time": "2024-12-06 16:00:58 +0000",
+    "path": "/modules/exploits/multi/http/primefaces_weak_encryption_rce.rb",
+    "is_install_path": true,
+    "ref_name": "multi/http/primefaces_weak_encryption_rce",
+    "check": true,
+    "post_auth": true,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": null
+  },
   "exploit_multi/http/processmaker_exec": {
     "name": "ProcessMaker Open Source Authenticated PHP Code Execution",
     "fullname": "exploit/multi/http/processmaker_exec",
@@ -115686,20 +116373,25 @@
     "needs_cleanup": true
   },
   "exploit_multi/http/werkzeug_debug_rce": {
-    "name": "Werkzeug Debug Shell Command Execution",
+    "name": "Pallete Projects Werkzeug Debugger Remote Code Execution",
     "fullname": "exploit/multi/http/werkzeug_debug_rce",
     "aliases": [
 
     ],
-    "rank": 600,
+    "rank": 400,
     "disclosure_date": "2015-06-28",
     "type": "exploit",
     "author": [
-      "h00die <mike@shorebreaksecurity.com>"
+      "h00die <mike@shorebreaksecurity.com>",
+      "Graeme Robinson <metasploit <Graeme Robinson <metasploit@grobinson.me>/@GraSec>"
     ],
-    "description": "This module will exploit the Werkzeug debug console to put down a\n        Python shell. This debugger \"must never be used on production\n        machines\" but sometimes slips passed testing.\n\n        Tested against:\n          0.9.6 on Debian\n          0.9.6 on Centos\n          0.10  on Debian",
+    "description": "This module will exploit the Werkzeug debug console to put down a Python shell. Werkzeug is included with Flask, but not enabled by default. It is also included in other projects, for example the RunServerPlus extension for Django. It may also be used alone.\n\n          The documentation states the following: \"The debugger must never be used on production machines. We cannot stress this enough. Do not enable the debugger in production.\" Of course this doesn't prevent developers from mistakenly enabling it in production!\n\n          Tested against the following Werkzeug versions:\n          - 3.0.3  on Debian 12, Windows 11 and macOS 14.6\n          - 1.1.4  on Debian 12\n          - 1.0.1  on Debian 12\n          - 0.11.5 on Debian 12\n          - 0.10   on Debian 12",
     "references": [
-      "URL-http://werkzeug.pocoo.org/docs/0.10/debug/#enabling-the-debugger"
+      "URL-https://werkzeug.palletsprojects.com/debug/#enabling-the-debugger",
+      "URL-https://flask.palletsprojects.com/debugging/#the-built-in-debugger",
+      "URL-https://web.archive.org/web/20150217044248/http://werkzeug.pocoo.org/docs/0.10/debug/#enabling-the-debugger",
+      "URL-https://web.archive.org/web/20151124061830/http://werkzeug.pocoo.org/docs/0.11/debug/#enabling-the-debugger",
+      "URL-https://github.com/pallets/werkzeug/commit/11ba286a1b907110a2d36f5c05740f239bc7deed?diff=unified&w=0#diff-83867b1c4c9b75c728654ed284dc98f7c8d4e8bd682fc31b977d122dd045178a"
     ],
     "platform": "Python",
     "arch": "python",
@@ -115720,9 +116412,12 @@
       "https"
     ],
     "targets": [
-      "werkzeug 0.10 and older"
+      "Werkzeug > 1.0.1 (Flask > 1.1.4)",
+      "Werkzeug 0.11.6 - 1.0.1 (Flask 1.0 - 1.1.4)",
+      "Werkzeug 0.11 - 0.11.5 (Flask < 1.0)",
+      "Werkzeug < 0.11 (Flask < 1.0)"
     ],
-    "mod_time": "2020-10-02 17:38:06 +0000",
+    "mod_time": "2024-12-08 21:01:17 +0000",
     "path": "/modules/exploits/multi/http/werkzeug_debug_rce.rb",
     "is_install_path": true,
     "ref_name": "multi/http/werkzeug_debug_rce",
@@ -115730,6 +116425,16 @@
     "post_auth": false,
     "default_credential": false,
     "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+        "ioc-in-logs",
+        "account-lockouts"
+      ]
     },
     "session_types": false,
     "needs_cleanup": null
@@ -116979,6 +117684,70 @@
     "session_types": false,
     "needs_cleanup": true
   },
+  "exploit_multi/http/wp_reallysimplessl_2fa_bypass_rce": {
+    "name": "WordPress Really Simple SSL Plugin Authentication Bypass to RCE",
+    "fullname": "exploit/multi/http/wp_reallysimplessl_2fa_bypass_rce",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-11-14",
+    "type": "exploit",
+    "author": [
+      "Valentin Lobstein",
+      "István Márton"
+    ],
+    "description": "This module exploits an authentication bypass vulnerability in the WordPress Really Simple SSL plugin\n          (versions 9.0.0 to 9.1.1.1). The vulnerability allows bypassing two-factor authentication (2FA) and\n          uploading a plugin to achieve remote code execution (RCE). Note: For the system to be vulnerable,\n          2FA must be enabled on the target site; otherwise, the exploit will not work.",
+    "references": [
+      "CVE-2024-10924",
+      "URL-https://github.com/RandomRobbieBF/CVE-2024-10924",
+      "URL-https://www.wordfence.com/threat-intel/vulnerabilities/detail/really-simple-security-free-pro-and-pro-multisite-900-9111-authentication-bypass"
+    ],
+    "platform": "Linux,PHP,Unix,Windows",
+    "arch": "php, cmd",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "PHP In-Memory",
+      "Unix In-Memory",
+      "Windows In-Memory"
+    ],
+    "mod_time": "2024-12-06 22:46:57 +0000",
+    "path": "/modules/exploits/multi/http/wp_reallysimplessl_2fa_bypass_rce.rb",
+    "is_install_path": true,
+    "ref_name": "multi/http/wp_reallysimplessl_2fa_bypass_rce",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk",
+        "ioc-in-logs"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": true
+  },
   "exploit_multi/http/wp_responsive_thumbnail_slider_upload": {
     "name": "WordPress Responsive Thumbnail Slider Arbitrary File Upload",
     "fullname": "exploit/multi/http/wp_responsive_thumbnail_slider_upload",
@@ -117145,6 +117914,70 @@
       ],
       "Stability": [
         "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": true
+  },
+  "exploit_multi/http/wp_time_capsule_file_upload_rce": {
+    "name": "WordPress WP Time Capsule Arbitrary File Upload to RCE",
+    "fullname": "exploit/multi/http/wp_time_capsule_file_upload_rce",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-11-15",
+    "type": "exploit",
+    "author": [
+      "Valentin Lobstein",
+      "Rein Daelman"
+    ],
+    "description": "This module exploits an arbitrary file upload vulnerability in the WordPress WP Time Capsule plugin\n          (versions <= 1.22.21). The vulnerability allows uploading a malicious PHP file to achieve remote\n          code execution (RCE).\n\n          The validation logic in the vulnerable function improperly checks for allowed extensions.\n          If no valid extension is found, the check can be bypassed by using a filename of specific length\n          (e.g., \"00.php\") matching the length of allowed extensions like \".crypt\".",
+    "references": [
+      "CVE-2024-8856",
+      "URL-https://hacked.be/posts/CVE-2024-8856",
+      "URL-https://www.wordfence.com/threat-intel/vulnerabilities/wordpress-plugins/wp-time-capsule/backup-and-staging-by-wp-time-capsule-12221-unauthenticated-arbitrary-file-upload"
+    ],
+    "platform": "Linux,PHP,Unix,Windows",
+    "arch": "php, cmd",
+    "rport": 80,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "PHP In-Memory",
+      "Unix/Linux Command Shell",
+      "Windows Command Shell"
+    ],
+    "mod_time": "2024-12-12 18:04:10 +0000",
+    "path": "/modules/exploits/multi/http/wp_time_capsule_file_upload_rce.rb",
+    "is_install_path": true,
+    "ref_name": "multi/http/wp_time_capsule_file_upload_rce",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk",
+        "ioc-in-logs"
       ],
       "Reliability": [
         "repeatable-session"
@@ -126484,7 +127317,7 @@
     "targets": [
       "Universal"
     ],
-    "mod_time": "2022-04-18 09:36:52 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/unix/http/schneider_electric_net55xx_encoder.rb",
     "is_install_path": true,
     "ref_name": "unix/http/schneider_electric_net55xx_encoder",
@@ -127970,7 +128803,7 @@
     "targets": [
       "vAPV 8.3.2.17 / vxAG 9.2.0.34"
     ],
-    "mod_time": "2022-04-18 09:36:52 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/unix/ssh/array_vxag_vapv_privkey_privesc.rb",
     "is_install_path": true,
     "ref_name": "unix/ssh/array_vxag_vapv_privkey_privesc",
@@ -128015,7 +128848,7 @@
     "targets": [
       "Unix-based Tectia SSH 6.3 or prior"
     ],
-    "mod_time": "2022-03-09 13:24:06 +0000",
+    "mod_time": "2024-11-18 17:32:48 +0000",
     "path": "/modules/exploits/unix/ssh/tectia_passwd_changereq.rb",
     "is_install_path": true,
     "ref_name": "unix/ssh/tectia_passwd_changereq",
@@ -128934,6 +129767,88 @@
     },
     "session_types": false,
     "needs_cleanup": null
+  },
+  "exploit_unix/webapp/cyberpanel_preauth_rce_multi_cve": {
+    "name": "CyberPanel Multi CVE Pre-auth RCE",
+    "fullname": "exploit/unix/webapp/cyberpanel_preauth_rce_multi_cve",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-10-27",
+    "type": "exploit",
+    "author": [
+      "DreyAnd",
+      "Valentin Lobstein",
+      "Luka Petrovic (refr4g)"
+    ],
+    "description": "This module exploits three separate unauthenticated Remote Code Execution vulnerabilities in CyberPanel:\n\n          - CVE-2024-51567: Command injection vulnerability in the \"upgrademysqlstatus\" endpoint.\n          - CVE-2024-51568: Command Injection via the \"completePath\" parameter in the \"outputExecutioner\" sink.\n          - CVE-2024-51378: Unauthenticated RCE in \"/ftp/getresetstatus\" and \"/dns/getresetstatus\".\n\n          These vulnerabilities were exploited in ransomware campaigns affecting over 22,000 CyberPanel instances, with the PSAUX ransomware being the primary actor in these attacks.",
+    "references": [
+      "CVE-2024-51567",
+      "CVE-2024-51568",
+      "CVE-2024-51378",
+      "URL-https://dreyand.rs/code/review/2024/10/27/what-are-my-options-cyberpanel-v236-pre-auth-rce",
+      "URL-https://refr4g.github.io/posts/cyberpanel-command-injection-vulnerability/",
+      "URL-https://github.com/DreyAnd/CyberPanel-RCE",
+      "URL-https://github.com/refr4g/CVE-2024-51378",
+      "URL-https://www.bleepingcomputer.com/news/security/massive-psaux-ransomware-attack-targets-22-000-cyberpanel-instances/",
+      "URL-https://gist.github.com/gboddin/d78823245b518edd54bfc2301c5f8882"
+    ],
+    "platform": "Linux,Unix",
+    "arch": "cmd",
+    "rport": 8090,
+    "autofilter_ports": [
+      80,
+      8080,
+      443,
+      8000,
+      8888,
+      8880,
+      8008,
+      3000,
+      8443
+    ],
+    "autofilter_services": [
+      "http",
+      "https"
+    ],
+    "targets": [
+      "Unix/Linux Command Shell"
+    ],
+    "mod_time": "2024-12-05 16:05:25 +0000",
+    "path": "/modules/exploits/unix/webapp/cyberpanel_preauth_rce_multi_cve.rb",
+    "is_install_path": true,
+    "ref_name": "unix/webapp/cyberpanel_preauth_rce_multi_cve",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "Reliability": [
+        "repeatable-session"
+      ],
+      "SideEffects": [
+        "ioc-in-logs"
+      ]
+    },
+    "session_types": false,
+    "needs_cleanup": null,
+    "actions": [
+      {
+        "name": "CVE-2024-51378",
+        "description": "Exploit using CVE-2024-51378"
+      },
+      {
+        "name": "CVE-2024-51567",
+        "description": "Exploit using CVE-2024-51567"
+      },
+      {
+        "name": "CVE-2024-51568",
+        "description": "Exploit using CVE-2024-51568"
+      }
+    ]
   },
   "exploit_unix/webapp/datalife_preview_exec": {
     "name": "DataLife Engine preview.php PHP Code Injection",
@@ -176933,7 +177848,7 @@
     "targets": [
       "Windows x64"
     ],
-    "mod_time": "2023-05-25 12:45:30 +0000",
+    "mod_time": "2024-12-12 17:11:53 +0000",
     "path": "/modules/exploits/windows/local/cve_2020_0668_service_tracing.rb",
     "is_install_path": true,
     "ref_name": "windows/local/cve_2020_0668_service_tracing",
@@ -177914,6 +178829,65 @@
       ],
       "Reliability": [
         "unreliable-session"
+      ]
+    },
+    "session_types": [
+      "meterpreter"
+    ],
+    "needs_cleanup": null,
+    "actions": [
+
+    ]
+  },
+  "exploit_windows/local/cve_2024_35250_ks_driver": {
+    "name": "Windows Access Mode Mismatch LPE in ks.sys",
+    "fullname": "exploit/windows/local/cve_2024_35250_ks_driver",
+    "aliases": [
+
+    ],
+    "rank": 600,
+    "disclosure_date": "2024-06-11",
+    "type": "exploit",
+    "author": [
+      "AngelBoy",
+      "varwara",
+      "jheysel-r7"
+    ],
+    "description": "The ks.sys driver on Windows is one of the core components of Kernel Streaming and is installed by default.\n          There exists a LPE in this driver which can be exploited on many recent versions of Windows 10,\n          Windows 11, Windows Server 2022.",
+    "references": [
+      "URL-https://github.com/varwara/CVE-2024-35250",
+      "URL-https://devco.re/blog/2024/08/23/streaming-vulnerabilities-from-windows-kernel-proxying-to-kernel-part1-en/",
+      "URL-https://googleprojectzero.blogspot.com/2019/03/windows-kernel-logic-bug-class-access.html",
+      "CVE-2024-35250"
+    ],
+    "platform": "Windows",
+    "arch": "x64",
+    "rport": null,
+    "autofilter_ports": [
+
+    ],
+    "autofilter_services": [
+
+    ],
+    "targets": [
+      "Windows x64"
+    ],
+    "mod_time": "2024-11-06 09:13:51 +0000",
+    "path": "/modules/exploits/windows/local/cve_2024_35250_ks_driver.rb",
+    "is_install_path": true,
+    "ref_name": "windows/local/cve_2024_35250_ks_driver",
+    "check": true,
+    "post_auth": false,
+    "default_credential": false,
+    "notes": {
+      "Stability": [
+        "crash-safe"
+      ],
+      "SideEffects": [
+        "artifacts-on-disk"
+      ],
+      "Reliability": [
+        "repeatable-session"
       ]
     },
     "session_types": [
@@ -216139,7 +217113,7 @@
       "Spencer McIntyre",
       "corelanc0d3r <peter.ve@corelan.be>"
     ],
-    "description": "Execute an x86 payload from a command via PowerShell.\n\nPerforms a TXT query against a series of DNS record(s) and executes the returned payload",
+    "description": "Execute an x86 payload from a command via PowerShell.\n\nPerforms a TXT query against a series of DNS record(s) and executes the returned x86 shellcode. The DNSZONE\noption is used as the base name to iterate over. The payload will first request the TXT contents of the a\nhostname, followed by b, then c, etc. until there are no more records. For each record that is returned, exactly\n255 bytes from it are copied into a buffer that is eventually executed. This buffer should be encoded using\nx86/alpha_mixed with the BufferRegister option set to EDI.",
     "references": [
 
     ],
@@ -243558,7 +244532,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2024-01-07 14:06:31 +0000",
+    "mod_time": "2024-11-25 08:19:36 +0000",
     "path": "/modules/payloads/stagers/windows/reverse_hop_http.rb",
     "is_install_path": true,
     "ref_name": "windows/custom/reverse_hop_http",
@@ -243716,7 +244690,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2022-11-04 00:33:03 +0000",
+    "mod_time": "2024-12-06 09:15:36 +0000",
     "path": "/modules/payloads/stagers/windows/reverse_https_proxy.rb",
     "is_install_path": true,
     "ref_name": "windows/custom/reverse_https_proxy",
@@ -244699,7 +245673,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2024-01-07 14:06:31 +0000",
+    "mod_time": "2024-11-25 08:19:36 +0000",
     "path": "/modules/payloads/stagers/windows/reverse_hop_http.rb",
     "is_install_path": true,
     "ref_name": "windows/dllinject/reverse_hop_http",
@@ -245220,7 +246194,7 @@
     "author": [
       "corelanc0d3r <peter.ve@corelan.be>"
     ],
-    "description": "Performs a TXT query against a series of DNS record(s) and executes the returned payload",
+    "description": "Performs a TXT query against a series of DNS record(s) and executes the returned x86 shellcode. The DNSZONE\n        option is used as the base name to iterate over. The payload will first request the TXT contents of the a\n        hostname, followed by b, then c, etc. until there are no more records. For each record that is returned, exactly\n        255 bytes from it are copied into a buffer that is eventually executed. This buffer should be encoded using\n        x86/alpha_mixed with the BufferRegister option set to EDI.",
     "references": [
 
     ],
@@ -245230,7 +246204,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2024-01-07 14:06:31 +0000",
+    "mod_time": "2024-12-06 14:26:44 +0000",
     "path": "/modules/payloads/singles/windows/dns_txt_query_exec.rb",
     "is_install_path": true,
     "ref_name": "windows/dns_txt_query_exec",
@@ -245266,7 +246240,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2024-01-07 14:06:31 +0000",
+    "mod_time": "2024-11-26 11:49:56 +0000",
     "path": "/modules/payloads/singles/windows/download_exec.rb",
     "is_install_path": true,
     "ref_name": "windows/download_exec",
@@ -245418,7 +246392,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2022-11-04 00:33:03 +0000",
+    "mod_time": "2024-11-28 06:39:07 +0000",
     "path": "/modules/payloads/singles/windows/messagebox.rb",
     "is_install_path": true,
     "ref_name": "windows/messagebox",
@@ -245885,7 +246859,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2024-01-07 14:06:31 +0000",
+    "mod_time": "2024-11-25 08:19:36 +0000",
     "path": "/modules/payloads/stagers/windows/reverse_hop_http.rb",
     "is_install_path": true,
     "ref_name": "windows/meterpreter/reverse_hop_http",
@@ -246055,7 +247029,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2022-11-04 00:33:03 +0000",
+    "mod_time": "2024-12-06 09:15:36 +0000",
     "path": "/modules/payloads/stagers/windows/reverse_https_proxy.rb",
     "is_install_path": true,
     "ref_name": "windows/meterpreter/reverse_https_proxy",
@@ -251724,7 +252698,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2024-01-07 14:06:31 +0000",
+    "mod_time": "2024-11-25 08:19:36 +0000",
     "path": "/modules/payloads/stagers/windows/reverse_hop_http.rb",
     "is_install_path": true,
     "ref_name": "windows/vncinject/reverse_hop_http",
@@ -252965,7 +253939,7 @@
     "autofilter_ports": null,
     "autofilter_services": null,
     "targets": null,
-    "mod_time": "2023-08-03 17:10:11 +0000",
+    "mod_time": "2024-11-27 08:15:57 +0000",
     "path": "/modules/payloads/singles/windows/x64/messagebox.rb",
     "is_install_path": true,
     "ref_name": "windows/x64/messagebox",
